@@ -1,0 +1,6 @@
+# folders
+Chatbot_backend/bin/
+Chatbot_backend/obj/
+
+# file extenstions
+.DS_Store
