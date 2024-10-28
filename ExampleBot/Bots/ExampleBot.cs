@@ -1,4 +1,4 @@
-﻿// Generated with EchoBot .NET Template version v4.22.0
+﻿// Generated with ExampleBot .NET Template version v4.22.0
 
 using System.Collections.Generic;
 using System.Threading;
@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Schema;
 
-namespace EchoBot.Bots
+namespace ExampleBot.Bots
 {
-    public class EchoBot : ActivityHandler
+    public class ExampleBot : ActivityHandler
     {
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            var replyText = $"Echo: {turnContext.Activity.Text}";
+            var replyText = $"Example: {turnContext.Activity.Text}";
             await turnContext.SendActivityAsync(MessageFactory.Text(replyText, replyText), cancellationToken);
         }
 

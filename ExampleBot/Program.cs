@@ -1,10 +1,10 @@
-﻿// Generated with EchoBot .NET Template version v4.22.0
+﻿// Generated with ExampleBot .NET Template version v4.22.0
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace EchoBot
+namespace ExampleBot
 {
     public class Program
     {

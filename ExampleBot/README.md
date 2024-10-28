@@ -1,8 +1,8 @@
-﻿# EchoBot
+﻿# ExampleBot
 
-Bot Framework v4 echo bot sample.
+Bot Framework v4 Example bot sample.
 
-This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and echoes it back.
+This bot has been created using [Bot Framework](https://dev.botframework.com), it shows how to create a simple bot that accepts input from the user and Examplees it back.
 
 ## Prerequisites
 
@@ -15,11 +15,11 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
 ## To try this sample
 
-- In a terminal, navigate to `EchoBot`
+- In a terminal, navigate to `ExampleBot`
 
     ```bash
     # change into project folder
-    cd EchoBot
+    cd ExampleBot
     ```
 
 - Run the bot from a terminal or from Visual Studio, choose option A or B.
@@ -35,8 +35,8 @@ This bot has been created using [Bot Framework](https://dev.botframework.com), i
 
   - Launch Visual Studio
   - File -> Open -> Project/Solution
-  - Navigate to `EchoBot` folder
-  - Select `EchoBot.csproj` file
+  - Navigate to `ExampleBot` folder
+  - Select `ExampleBot.csproj` file
   - Press `F5` to run the project
 
 ## Testing the bot using Bot Framework Emulator
@@ -68,4 +68,4 @@ To learn more about deploying a bot to Azure, see [Deploy your bot to Azure](htt
 - [Language Understanding using LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/)
 - [Channels and Bot Connector Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-concepts?view=azure-bot-service-4.0)
 
-Generated using `dotnet new echobot` v4.22.0
+Generated using `dotnet new Examplebot` v4.22.0
