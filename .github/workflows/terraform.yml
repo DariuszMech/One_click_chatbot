@@ -27,7 +27,25 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
         
-    - name: Set up Azure credentials
+    # Log into Azure and set the subscription
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # This runs Azure CLI and configures it
+    - name: Azure CLI Login
+      env:
+        AZURE_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        AZURE_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        AZURE_TENANT_ID: ${{ secrets.TENANT_ID }}
+      run: |
+        az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID
+
+    - name: Set Azure Subscription
+      run: az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+
+    - name: Set up Terraform environment variables
       env:
         ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
         ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
