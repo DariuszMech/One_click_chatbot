@@ -21,7 +21,7 @@ resource "random_integer" "ri" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "myTFResourceGroup-${random_integer.ri.result}"
+  name     = "myTFResourceGroup"
   location = "westus2"
 }
 
@@ -30,18 +30,23 @@ resource "azurerm_service_plan" "appserviceplan" {
   name                = "webapp-asp-${random_integer.ri.result}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  os_type             = "Linux"
-  sku_name            = "B1"
+  os_type             = "Windows"
+  sku_name            = "F1"
+
 }
 
-# Create the web app, pass in the App Service Plan ID
-resource "azurerm_linux_web_app" "webapp" {
-  name                  = "webapp-${random_integer.ri.result}"
-  location              = azurerm_resource_group.rg.location
-  resource_group_name   = azurerm_resource_group.rg.name
-  service_plan_id       = azurerm_service_plan.appserviceplan.id
-  https_only            = true
-  site_config { 
+resource "azurerm_windows_web_app" "app_service" {
+  name                = "mywebapp-${random_integer.ri.result}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_resource_group.rg.location
+  service_plan_id     = azurerm_service_plan.appserviceplan.id
+
+  site_config {
     minimum_tls_version = "1.2"
+    always_on           = false
+    # application_stack {
+    #   current_stack  = "dotnet"
+    #   dotnet_version = "v8.0"
+    # }
   }
 }
