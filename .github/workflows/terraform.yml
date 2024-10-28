@@ -31,10 +31,7 @@ jobs:
     - name: Azure Login
       uses: azure/login@v1
       with:
-          client-id: ${{ secrets.CLIENT_ID }}
-          client-secret: ${{ secrets.CLIENT_SECRET }}
-          tenant-id: ${{ secrets.TENANT_ID }}
-          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+          creds: ${{ AZURE_CREDENTIALS }}
 
     - name: Set Azure Subscription
       run: az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
