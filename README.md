@@ -22,21 +22,30 @@ The goal of this project is to create a pipeline enabling the creation of an ent
 
         5. terraform -install-autocomplete
 
-## Install the Azure CLI tool:
+## Install the Azure CLI tool and login:
     brew update && brew install azure-cli
 
-## In your terminal, use the Azure CLI tool to setup your account permissions locally.
+In your terminal, use the Azure CLI tool to setup your account permissions locally.
+    
     az login
 
 Your browser will open and prompt you to enter your Azure login credentials. After successful authentication, your terminal will display your subscription information.
 
-## Find the id column for the subscription account you want to use. Once you have chosen the account subscription ID, set the account with the Azure CLI.
+## Set the account with the Azure CLI.
+
+Find the id column for the subscription account you want to use. Once you have chosen the account subscription ID, set the account with the Azure CLI.
 
     az account set --subscription "subscription-id" 
 
-## There is a Service Principal application which is an Azure Active Directory with authentication tokens that Terraform needs to perform actions on your behalf
 
-## In your terminal, set the following environment variables which will connect your application to your Service Principal application (appropriate values should be provided to you by the owner of this project)
+
+## Set the environment variables 
+
+There is a Service Principal application which is an Azure Active Directory with authentication tokens that Terraform needs to perform actions on your behalf
+In your terminal, set the following environment variables 
+which will connect your application to your Service Principal application 
+
+(appropriate values should be provided to you by the owner of this project)
 
 
     export ARM_CLIENT_ID="<APPID_VALUE>"
@@ -44,8 +53,6 @@ Your browser will open and prompt you to enter your Azure login credentials. Aft
     export ARM_SUBSCRIPTION_ID="<SUBSCRIPTION_ID>"
     export ARM_TENANT_ID="<TENANT_VALUE>"
 
-
-## In the working directory, create a file called main.tf and paste Terraform configuration into it.
 
 ## Initialize your Terraform configuration
     terraform init
