@@ -23,8 +23,8 @@ namespace Dialogs
             var waterfallSteps = new WaterfallStep[]
             {
                 NameStepAsync,
+                Org_nameStepAsync,
                 LocationStepAsync,
-                DestinationStepAsync,
                 SummaryStepAsync,
                 ConfirmStepAsync,
             };
@@ -32,8 +32,8 @@ namespace Dialogs
             // Add named dialogs to the DialogSet. These names are saved in the dialog state.
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), waterfallSteps));
             AddDialog(new TextPrompt(nameof(TextPrompt), ValidateNameAsync)); // For name validation
-            AddDialog(new TextPrompt(nameof(TextPrompt) + "Location", ValidateLocationAsync)); // For location validation
-            AddDialog(new TextPrompt(nameof(TextPrompt) + "Destination", ValidateDestinationAsync)); // For destination validation
+            AddDialog(new TextPrompt(nameof(TextPrompt) + "Org_name", ValidateOrg_nameAsync)); // For Org_name validation
+            AddDialog(new TextPrompt(nameof(TextPrompt) + "Location", ValidateLocationAsync)); // For Location validation
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
 
             // The initial child Dialog to run.
@@ -63,36 +63,40 @@ namespace Dialogs
             }, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> LocationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> Org_nameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             stepContext.Values["name"] = (string)stepContext.Result; // Store name
-            return await stepContext.PromptAsync(nameof(TextPrompt) + "Location", new PromptOptions
+            return await stepContext.PromptAsync(nameof(TextPrompt) + "Org_name", new PromptOptions
             {
-                Prompt = MessageFactory.Text("Please enter Your location:")  // Asking for location
+                Prompt = MessageFactory.Text("Please enter the name of the organization involved in the data breach:")  // Asking for Org_name
             }, cancellationToken);
         }
 
-        private async Task<DialogTurnResult> DestinationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
+        private async Task<DialogTurnResult> LocationStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["location"] = (string)stepContext.Result; // Store location
-            return await stepContext.PromptAsync(nameof(TextPrompt) + "Destination", new PromptOptions
+            stepContext.Values["Org_name"] = (string)stepContext.Result; // Store Org_name
+            return await stepContext.PromptAsync(nameof(TextPrompt) + "Location", new PromptOptions
             {
-                Prompt = MessageFactory.Text("Please enter Your destination:") 
+                Prompt = MessageFactory.Text("Please enter Your Location:") 
             }, cancellationToken);
         }
 
         private async Task<DialogTurnResult> SummaryStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            stepContext.Values["destination"] = (string)stepContext.Result; // Store destination
+            stepContext.Values["Location"] = (string)stepContext.Result; // Store Location
 
             // Get the current profile object from user state.
             var userProfile = await _userProfileAccessor.GetAsync(stepContext.Context, () => new UserProfile(), cancellationToken);
 
             userProfile.Name = (string)stepContext.Values["name"];
-            userProfile.Location = (string)stepContext.Values["location"];
-            userProfile.Destination = (string)stepContext.Values["destination"];
+            userProfile.Org_name = (string)stepContext.Values["Org_name"];
+            userProfile.Location = (string)stepContext.Values["Location"];
 
-            var msg = $"I have Your name as {userProfile.Name}, location: {userProfile.Location}, destination: {userProfile.Destination}.";
+            var msg = $"Thank you. Just to confirm, I have the following details \n" +
+            "Your name as {userProfile.Name},\n" + 
+            "Org_name: {userProfile.Org_name},\n" +
+            "Location: {userProfile.Location}.\n";
+
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = MessageFactory.Text("Is collected data correct?") }, cancellationToken);
@@ -104,11 +108,11 @@ namespace Dialogs
 
             if ((bool)stepContext.Result)
             {
-                msg += $"Your profile was saved successfully.";
+                msg += $"Your report was saved successfully.";
             }
             else
             {
-                msg += $"Your profile was not saved.";
+                msg += $"Your report was not saved.";
             }
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
@@ -150,16 +154,16 @@ namespace Dialogs
             
         }
 
-        // Validation function for the location step
-        private async Task<bool> ValidateLocationAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
+        // Validation function for the Org_name step
+        private async Task<bool> ValidateOrg_nameAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
         {
-            var location = promptContext.Recognized.Value;
+            var Org_name = promptContext.Recognized.Value;
 
             // Checks
-            if (location.Length > 300)
+            if (Org_name.Length > 300)
             {
                 await promptContext.Context.SendActivityAsync(
-                    MessageFactory.Text("Location is too long!"),
+                    MessageFactory.Text("Org_name is too long!"),
                     cancellationToken);
                 return false;
             }
@@ -167,16 +171,16 @@ namespace Dialogs
             return true;
         }
 
-        // Validation function for the destination step
-        private async Task<bool> ValidateDestinationAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
+        // Validation function for the Location step
+        private async Task<bool> ValidateLocationAsync(PromptValidatorContext<string> promptContext, CancellationToken cancellationToken)
         {
-            var destination = promptContext.Recognized.Value;
+            var Location = promptContext.Recognized.Value;
 
             // Checks
-            if (destination.Length > 300)
+            if (Location.Length > 300)
             {
                 await promptContext.Context.SendActivityAsync(
-                    MessageFactory.Text("Destination is too long!"),
+                    MessageFactory.Text("Location is too long!"),
                     cancellationToken);
                 return false;
             }

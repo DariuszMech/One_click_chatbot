@@ -46,7 +46,7 @@ namespace ExampleBot.Bots
 
         protected override async Task OnMembersAddedAsync(IList<ChannelAccount> membersAdded, ITurnContext<IConversationUpdateActivity> turnContext, CancellationToken cancellationToken)
         {
-            var welcomeText = "Hi! I am an Example Bot";
+            var welcomeText = "Hello! I'm the ICO Virtual Assistant that can help You with reporting a data breach";
             foreach (var member in membersAdded)
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
