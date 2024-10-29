@@ -6,6 +6,9 @@ ExampleBot/bin/
 ExampleBot/obj/
 ExampleBot/DeploymentTemplates/
 
+ExampleBotTerminal/bin/
+ExampleBotTerminal/obj/
+
 # file extenstions
 .DS_Store
 
