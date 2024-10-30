@@ -93,9 +93,9 @@ namespace Dialogs
             userProfile.Location = (string)stepContext.Values["Location"];
 
             var msg = "Thank you. Just to confirm, I have the following details \n" +
-            $"Your name as {userProfile.Name},\n" + 
+            $"Your name: {userProfile.Name},\n" + 
             $"Org_name: {userProfile.Org_name},\n" +
-            $"Location: {userProfile.Location}.\n";
+            $"Location: {userProfile.Location}";
 
             await stepContext.Context.SendActivityAsync(MessageFactory.Text(msg), cancellationToken);
 
