@@ -40,21 +40,6 @@ namespace Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         private async Task<DialogTurnResult> NameStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions
