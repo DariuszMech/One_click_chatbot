@@ -14,6 +14,7 @@ ExampleBotTerminal/obj/
 
 # Local .terraform directories
 **/.terraform/*
+**/terraform.tfstate
 
 # .tfstate files
 *.tfstate
@@ -51,3 +52,8 @@ override.tf.json
 terraform.rc
 
 .terraform.lock.hcl
+.tfstate
+ops/terraform.tfstate
+ops/*.tfstate
+One_click_chatbot/ops/terraform.tfstate
+/ops/terraform.tfstate

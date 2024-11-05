@@ -9,7 +9,6 @@ terraform {
       version = "3.0.2"
     }
   }
-
   required_version = ">= 1.1.0"
 }
 
@@ -58,17 +57,29 @@ resource "azurerm_windows_web_app" "app_service" {
     minimum_tls_version = "1.2"
     always_on           = false
   }
+
+  app_settings = {
+    "MicrosoftAppId" = "${azuread_application_registration.app_registration.client_id}"
+    "MicrosoftAppPassword" = "${azuread_application_password.registration_password.value}"
+  }
 }
 
-resource "azuread_application_registration" "example" {
-  display_name     = "${azurerm_resource_group.rg.name}"
+resource "azuread_application_registration" "app_registration" {
+  display_name     = "${azurerm_resource_group.rg.name}-AppReg-${random_integer.ri.result}"
 }
 
 # Configure the Azure Bot Service using the new App Registration details
-resource "azurerm_bot_service_azure_bot" "example" {
+resource "azurerm_bot_service_azure_bot" "bot_service" {
   name                    = "${azurerm_resource_group.rg.name}-Bot-${random_integer.ri.result}"
   resource_group_name     = azurerm_resource_group.rg.name
   location                = "global"
-  microsoft_app_id        = azuread_application_registration.example.client_id
+  microsoft_app_id        = azuread_application_registration.app_registration.client_id
   sku                     = "F0"
+  endpoint                = "https://${azurerm_windows_web_app.app_service.default_hostname}/api/messages"
 }
+
+
+resource "azuread_application_password" "registration_password" {
+  application_id = azuread_application_registration.app_registration.id
+}
+
