@@ -32,19 +32,19 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
         
-    # # Log into Azure and set the subscription
-    # - name: Azure Login
-    #   uses: azure/login@v1
-    #   with:
-    #       client-id: ${{ secrets.AZURE_CLIENT_ID }}
-    #       tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-    #       subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    # Log into Azure and set the subscription
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    # - name: Set Azure Subscription
-    #   run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-     
     - name: Set Azure Subscription
-      run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant  ${{ secrets.AZURE_TENANT_ID }}
+      run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+     
+    # - name: Set Azure Subscription
+    #   run: az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant  ${{ secrets.AZURE_TENANT_ID }}
  
     
     - name: Set Azure Environment Variables
