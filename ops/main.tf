@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0.2"
+      version = "4.8.0"
     }
     azuread = {
       source = "hashicorp/azuread"
@@ -12,12 +12,17 @@ terraform {
   required_version = ">= 1.1.0"
 }
 
+variable "subscription_id" {
+  type = string
+}
+
 provider "azurerm" {
   features {
     resource_group {
       prevent_deletion_if_contains_resources = false
     }
   }
+  subscription_id = var.subscription_id
 }
 
 provider "azuread" {
@@ -66,6 +71,7 @@ resource "azurerm_windows_web_app" "app_service" {
 
 resource "azuread_application_registration" "app_registration" {
   display_name     = "${azurerm_resource_group.rg.name}-AppReg-${random_integer.ri.result}"
+  sign_in_audience = "AzureADMultipleOrgs"
 }
 
 # Configure the Azure Bot Service using the new App Registration details
@@ -76,8 +82,8 @@ resource "azurerm_bot_service_azure_bot" "bot_service" {
   microsoft_app_id        = azuread_application_registration.app_registration.client_id
   sku                     = "F0"
   endpoint                = "https://${azurerm_windows_web_app.app_service.default_hostname}/api/messages"
+  microsoft_app_type      = "MultiTenant"
 }
-
 
 resource "azuread_application_password" "registration_password" {
   application_id = azuread_application_registration.app_registration.id
