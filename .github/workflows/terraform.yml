@@ -68,7 +68,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -out=tfplan
+      run: terraform plan -input=false -out=tfplan var "subscription_id=${{secrets.AZURE_SUBSCRIPTION_ID}}"
 
     - name: Terraform Apply
       run: terraform apply -auto-approve tfplan
