@@ -2,7 +2,7 @@
 # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
 # to the "main" branch, `terraform apply` will be executed.
  
-name: 'Terraform'
+name: 'registration delete'
  
 on:
  workflow_dispatch:
