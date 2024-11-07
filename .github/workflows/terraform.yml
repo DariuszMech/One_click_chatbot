@@ -61,16 +61,5 @@ jobs:
       run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/TerraformOCB
       working-directory: ./ops
       
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt -check
-      working-directory: ./ops
-      
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan -input=false -out=tfplan
-      working-directory: ./ops
- 
-    - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
-      working-directory: ./ops
+    - name: Delete specific app registration
+      run: az ad app delete --id $(az bot show --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --name ${{ secrets.BOT_SERVICE_NAME }} --query "properties.msaAppId" -o tsv)
