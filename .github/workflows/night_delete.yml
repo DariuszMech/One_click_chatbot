@@ -1,0 +1,57 @@
+name: 'Nightly Delete Azure resources'
+
+on:
+  schedule:
+    - cron: "20 16 * * *"
+  workflow_dispatch:
+ 
+jobs:
+  delete-azure-resources:
+    name: 'Azure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+ 
+    permissions:
+      id-token: write
+      contents: read
+ 
+    defaults:
+      run:
+        shell: bash
+ 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+ 
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+ 
+      - name: Set Azure Subscription
+        run: az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+ 
+      - name: Set Azure Environment Variables
+        run: |
+          echo "ARM_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "ARM_CLIENT_SECRET=${{ secrets.AZURE_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+          echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
+ 
+      - name: Get all resource groups for RESOURCE_GROUP_NAME
+        run: echo "RESOURCE_GROUPS=$(az group list --query \"[?starts_with(name, ${{ secrets.RESOURCE_GROUP_NAME }})].name\" -o json)" >> $GITHUB_ENV
+ 
+      - name: Set Resource Groups
+        run: echo "RESOURCE_GROUPS=$(echo ${{ env.RESOURCE_GROUPS }} | jq -r '.[]')" >> $GITHUB_ENV
+ 
+      - name: Delete Resource Groups
+        run: |
+          for rg in $RESOURCE_GROUPS; do
+            az group delete --name $rg --yes --no-wait
+          done
+ 
+ 
