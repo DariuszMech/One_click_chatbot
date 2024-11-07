@@ -62,5 +62,5 @@ jobs:
       working-directory: ./ops
       
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve tfplan
+      run: terraform destroy -auto-approve
       working-directory: ./ops
