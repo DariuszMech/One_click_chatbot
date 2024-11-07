@@ -58,9 +58,12 @@ jobs:
       working-directory: ./ops
  
     - name: Import Resource Group
-      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/TerraformOCB
+      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
       working-directory: ./ops
-      
+   
     - name: Delete specific app registration
       run: az ad app delete --id $(az bot show --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --name ${{ secrets.BOT_SERVICE_NAME }} --query "properties.msaAppId" -o tsv)
 
+    - name: Terraform Destroy
+      run: terraform destroy -auto-approve
+      working-directory: ./ops
