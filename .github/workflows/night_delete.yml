@@ -44,7 +44,7 @@ jobs:
  
       - name: Get all resource groups for RESOURCE_GROUP_NAME
         run: | 
-         RESOURCE_GROUPS=$(az group list --query "[?starts_with(name, ${{ secrets.RESOURCE_GROUP_NAME }})].name" -o json) 
+         RESOURCE_GROUPS=$(az group list --query "[?starts_with(name, 'TerraformOCB')].name" -o json) 
          echo "RESOURCE_GROUPS=$RESOURCE_GROUPS" >> $GITHUB_ENV
       - name: Set Resource Groups
         run: echo "RESOURCE_GROUPS=$(echo ${{ env.RESOURCE_GROUPS }} | jq -r '.[]')" >> $GITHUB_ENV
