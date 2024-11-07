@@ -38,7 +38,7 @@ resource "random_integer" "ri" {
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "TerraformOCB"
+  name     = "TerraformOCB_1"
   location = "westus2"
 }
 
