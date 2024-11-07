@@ -5,7 +5,7 @@ terraform {
       version = "4.8.0"
     }
     azuread = {
-      source = "hashicorp/azuread"
+      source  = "hashicorp/azuread"
       version = "3.0.2"
     }
   }
@@ -64,7 +64,7 @@ resource "azurerm_windows_web_app" "app_service" {
   }
 
   app_settings = {
-    "MicrosoftAppId" = "${azuread_application_registration.app_registration.client_id}"
+    "MicrosoftAppId"       = "${azuread_application_registration.app_registration.client_id}"
     "MicrosoftAppPassword" = "${azuread_application_password.registration_password.value}"
   }
 }
@@ -76,13 +76,13 @@ resource "azuread_application_registration" "app_registration" {
 
 # Configure the Azure Bot Service using the new App Registration details
 resource "azurerm_bot_service_azure_bot" "bot_service" {
-  name                    = "${azurerm_resource_group.rg.name}-Bot-${random_integer.ri.result}"
-  resource_group_name     = azurerm_resource_group.rg.name
-  location                = "global"
-  microsoft_app_id        = azuread_application_registration.app_registration.client_id
-  sku                     = "F0"
-  endpoint                = "https://${azurerm_windows_web_app.app_service.default_hostname}/api/messages"
-  microsoft_app_type      = "MultiTenant"
+  name                = "${azurerm_resource_group.rg.name}-Bot-${random_integer.ri.result}"
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = "global"
+  microsoft_app_id    = azuread_application_registration.app_registration.client_id
+  sku                 = "F0"
+  endpoint            = "https://${azurerm_windows_web_app.app_service.default_hostname}/api/messages"
+  microsoft_app_type  = "MultiTenant"
 }
 
 resource "azuread_application_password" "registration_password" {
