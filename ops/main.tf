@@ -49,7 +49,7 @@ resource "azurerm_resource_group" "rg" {
 
 
 resource "azurerm_service_plan" "appserviceplan" {
-  name                = "${azurerm_resource_group.rg.name}"
+  name                = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Windows"
@@ -57,7 +57,7 @@ resource "azurerm_service_plan" "appserviceplan" {
 }
 
 resource "azurerm_windows_web_app" "app_service" {
-  name                = "${azurerm_resource_group.rg.name}"
+  name                = azurerm_resource_group.rg.name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   service_plan_id     = azurerm_service_plan.appserviceplan.id
@@ -74,13 +74,13 @@ resource "azurerm_windows_web_app" "app_service" {
 }
 
 resource "azuread_application_registration" "app_registration" {
-  display_name     = "${azurerm_resource_group.rg.name}"
+  display_name     = azurerm_resource_group.rg.name
   sign_in_audience = "AzureADMultipleOrgs"
 }
 
 # Configure the Azure Bot Service using the new App Registration details
 resource "azurerm_bot_service_azure_bot" "bot_service" {
-  name                = "${azurerm_resource_group.rg.name}"
+  name                = azurerm_resource_group.rg.name
   resource_group_name = azurerm_resource_group.rg.name
   location            = "global"
   microsoft_app_id    = azuread_application_registration.app_registration.client_id
