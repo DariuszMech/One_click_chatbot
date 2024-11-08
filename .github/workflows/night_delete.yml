@@ -2,7 +2,7 @@ name: 'Nightly Delete Azure resources'
 
 on:
   schedule:
-    - cron: "30 10 * * *"
+  - cron:  "20 11 * * *"
   workflow_dispatch:
  
 jobs:
