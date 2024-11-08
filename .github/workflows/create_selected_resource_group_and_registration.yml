@@ -61,7 +61,12 @@ jobs:
         echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
         echo "TF_VAR_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
     
- 
+
+     # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+      working-directory: ./ops
+      
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run: terraform init
@@ -71,18 +76,13 @@ jobs:
       run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }}
       working-directory: ./ops
       continue-on-error: true
-
-      
-    # Checks that all Terraform configuration files adhere to a canonical format
-    - name: Terraform Format
-      run: terraform fmt -check
-      working-directory: ./ops
       
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false -out=tfplan
+      run: terraform plan -input=false -out=tfplan -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }}"
       working-directory: ./ops
- 
+
+    # Applies the Terraform plan
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan -var="resource_group_name=${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }}"
+      run: terraform apply -auto-approve tfplan
       working-directory: ./ops
