@@ -2,10 +2,20 @@
 # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
 # to the "main" branch, `terraform apply` will be executed.
  
-name: 'Terraform'
+name: 'Create selected resource group and registration'
  
 on:
  workflow_dispatch:
+   inputs:
+     resource_group_number:
+       required: true
+       default: '001'
+       description: Please select the resource group you want to delete
+       type: choice
+       options:
+         - '001'
+         - '002'
+         - '003'
  
 jobs:
   terraform:
@@ -58,7 +68,7 @@ jobs:
       working-directory: ./ops
  
     - name: Import Resource Group
-      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
+      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }}
       working-directory: ./ops
       continue-on-error: true
 
@@ -74,5 +84,5 @@ jobs:
       working-directory: ./ops
  
     - name: Terraform Apply
-      run: terraform apply -auto-approve tfplan
+      run: terraform apply -auto-approve tfplan -var="resource_group_number=${{ github.event.inputs.resource_group_number }}"
       working-directory: ./ops
