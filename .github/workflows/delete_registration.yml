@@ -2,7 +2,7 @@
 # `terraform init`, `terraform fmt`, and `terraform plan` (speculative plan via Terraform Cloud). On push events
 # to the "main" branch, `terraform apply` will be executed.
  
-name: 'registration delete'
+name: 'Delete selected resource group and registration'
  
 on:
  workflow_dispatch:
