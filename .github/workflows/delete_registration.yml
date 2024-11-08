@@ -6,6 +6,16 @@ name: 'registration delete'
  
 on:
  workflow_dispatch:
+   inputs:
+     resource_group_number:
+       required: true
+       default: '001'
+       description: Please select the resource group you want to delete
+       type: choice
+       options:
+         - '001'
+         - '002'
+         - '003'
  
 jobs:
   terraform:
@@ -58,11 +68,11 @@ jobs:
       working-directory: ./ops
  
     - name: Import Resource Group
-      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}
+      run: terraform import azurerm_resource_group.rg /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.RESOURCE_GROUP_NAME }}'-'${{ github.event.inputs.resource_group_number }}
       working-directory: ./ops
    
     - name: Delete specific app registration
-      run: az ad app delete --id $(az bot show --resource-group ${{ secrets.RESOURCE_GROUP_NAME }} --name ${{ secrets.BOT_SERVICE_NAME }} --query "properties.msaAppId" -o tsv)
+      run: az ad app delete --id $(az bot show --resource-group ${{ secrets.RESOURCE_GROUP_NAME }}'-'${{ github.event.inputs.resource_group_number }} --name ${{ secrets.RESOURCE_GROUP_NAME }}'-'${{ github.event.inputs.resource_group_number }} --query "properties.msaAppId" -o tsv)
 
     - name: Terraform Destroy
       run: terraform destroy -auto-approve
