@@ -60,5 +60,26 @@ jobs:
           for rg in $RESOURCE_GROUPS; do
             echo "Deleting resource group: $rg"
             az group delete --name "$rg" --yes --no-wait
+          done
+
+    # Fetch and Delete App Registrations with Display Names starting with RESOURCE_GROUP_NAME
+      - name: Get all App Registrations for RESOURCE_GROUP_NAME
+        id: get_app_registrations
+        run: |
+          RESOURCE_GROUP_NAME="${{ secrets.RESOURCE_GROUP_NAME }}"
+          # Fetch all app registrations that have display names starting with RESOURCE_GROUP_NAME
+          APP_REGISTRATIONS=$(az ad app list --filter "startswith(displayName,'$RESOURCE_GROUP_NAME')" --query "[].appId" -o json)
+          # Convert JSON array to a comma-separated list
+          APP_REGISTRATIONS_LIST=$(echo "$APP_REGISTRATIONS" | jq -r '.[]' | paste -sd "," -)
+          echo "APP_REGISTRATIONS=$APP_REGISTRATIONS_LIST" >> $GITHUB_ENV
+  
+      - name: Output App Registrations
+        run: echo "App Registrations:${{ env.APP_REGISTRATIONS }}"
+  
+      - name: Delete App Registrations
+        run: |
+          IFS=','  # Set comma as the delimiter
+          for app_id in $APP_REGISTRATIONS; do
+            echo "Deleting app registration with App ID: $app_id"
+            az ad app delete --id "$app_id"
           done 
- 
