@@ -72,7 +72,3 @@ jobs:
    
     - name: Delete specific app registration
       run: az ad app delete --id $(az bot show --resource-group ${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }} --name ${{ secrets.RESOURCE_GROUP_NAME }}${{ github.event.inputs.resource_group_number }} --query "properties.msaAppId" -o tsv)
-
-    - name: Terraform Destroy
-      run: terraform destroy -auto-approve
-      working-directory: ./ops
