@@ -2,7 +2,7 @@ name: 'Nightly Delete Azure resources'
 
 on:
   schedule:
-    - cron: "55 14 * * *"
+    - cron: "30 10 * * *"
   workflow_dispatch:
  
 jobs:
@@ -41,14 +41,18 @@ jobs:
           echo "ARM_SUBSCRIPTION_ID=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
           echo "ARM_TENANT_ID=${{ secrets.AZURE_TENANT_ID }}" >> $GITHUB_ENV
           echo "TF_VAR_subscription_id=${{ secrets.AZURE_SUBSCRIPTION_ID }}" >> $GITHUB_ENV
- 
+      
       - name: Get all resource groups for RESOURCE_GROUP_NAME
-        run: | 
-         RESOURCE_GROUPS=$(az group list --query "[?starts_with(name, 'TerraformOCB')].name" -o json) 
-         echo "RESOURCE_GROUPS=$RESOURCE_GROUPS" >> $GITHUB_ENV
-      - name: Set Resource Groups
-        run: echo "RESOURCE_GROUPS=$(echo ${{ env.RESOURCE_GROUPS }} | jq -r '.[]')" >> $GITHUB_ENV
- 
+        id: get_resource_groups
+        run: |
+          RESOURCE_GROUPS=$(az group list --query "[?starts_with(name, 'TerraformOCB')].name" -o json)
+          # Convert JSON array to a comma-separated list
+          RESOURCE_GROUPS_LIST=$(echo "$RESOURCE_GROUPS" | jq -r '.[]' | paste -sd "," -)
+          echo "RESOURCE_GROUPS=$RESOURCE_GROUPS_LIST" >> $GITHUB_ENV
+        
+      - name: Output Resource Groups
+        run: echo "Resource Groups:${{ env.RESOURCE_GROUPS }}"
+        
       - name: Delete Resource Groups
         run: |
           for rg in $RESOURCE_GROUPS; do
