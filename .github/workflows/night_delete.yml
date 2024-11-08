@@ -55,8 +55,9 @@ jobs:
         
       - name: Delete Resource Groups
         run: |
+          IFS=','  # Set comma as the delimiter
           for rg in $RESOURCE_GROUPS; do
-            az group delete --name $rg --yes --no-wait
-          done
- 
+            echo "Deleting resource group: $rg"
+            az group delete --name "$rg" --yes --no-wait
+          done 
  
