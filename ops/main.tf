@@ -36,10 +36,14 @@ data "azurerm_client_config" "current" {}
 variable "resource_group_name" {
   description = "The name and number for the resource group"
   type        = string
+  validation {
+    condition     = length(var.resource_group_name) > 0
+    error_message = "resource_group_name cannot be empty"
+  }
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.resource_group_name}"
+  name     = var.resource_group_name
   location = "uksouth"
 }
 
