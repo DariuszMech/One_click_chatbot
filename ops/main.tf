@@ -32,28 +32,27 @@ provider "azuread" {
 # Retrieve current Azure client configuration
 data "azurerm_client_config" "current" {}
 
-resource "random_integer" "ri" {
-  min = 10000
-  max = 99999
+variable "resource_group_number" {
+  description = "The number for the resource group"
+  type        = string
 }
 
 resource "azurerm_resource_group" "rg" {
-  name     = "TerraformOCB"
-  location = "westus2"
+  name     = "TerraformOCB${var.resource_group_number}"
+  location = "uksouth"
 }
 
 
 resource "azurerm_service_plan" "appserviceplan" {
-  name                = "${azurerm_resource_group.rg.name}-WebApp-ASP-${random_integer.ri.result}"
+  name                = "${azurerm_resource_group.rg.name}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   os_type             = "Windows"
   sku_name            = "F1"
-
 }
 
 resource "azurerm_windows_web_app" "app_service" {
-  name                = "${azurerm_resource_group.rg.name}-WebApp-${random_integer.ri.result}"
+  name                = "${azurerm_resource_group.rg.name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   service_plan_id     = azurerm_service_plan.appserviceplan.id
@@ -70,13 +69,13 @@ resource "azurerm_windows_web_app" "app_service" {
 }
 
 resource "azuread_application_registration" "app_registration" {
-  display_name     = "${azurerm_resource_group.rg.name}-AppReg-${random_integer.ri.result}"
+  display_name     = "${azurerm_resource_group.rg.name}"
   sign_in_audience = "AzureADMultipleOrgs"
 }
 
 # Configure the Azure Bot Service using the new App Registration details
 resource "azurerm_bot_service_azure_bot" "bot_service" {
-  name                = "${azurerm_resource_group.rg.name}-Bot-${random_integer.ri.result}"
+  name                = "${azurerm_resource_group.rg.name}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = "global"
   microsoft_app_id    = azuread_application_registration.app_registration.client_id
