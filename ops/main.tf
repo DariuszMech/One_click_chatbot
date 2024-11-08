@@ -32,13 +32,14 @@ provider "azuread" {
 # Retrieve current Azure client configuration
 data "azurerm_client_config" "current" {}
 
-variable "resource_group_number" {
-  description = "The number for the resource group"
+
+variable "resource_group_name" {
+  description = "The name and number for the resource group"
   type        = string
 }
 
-resource "azurerm_resource_group" "rg" {
-  name     = "TerraformOCB${var.resource_group_number}"
+resource "azurerm_resource_group" "rg" {s
+  name     = "${var.resource_group_name}"
   location = "uksouth"
 }
 
