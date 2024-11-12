@@ -37,6 +37,25 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v4
+
+    - name: Set up .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Build with dotnet
+      working-directory: ./ExampleBot
+      run: dotnet build --configuration Release
+
+    - name: dotnet publish
+      working-directory: ./ExampleBot
+      run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
+
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: .net-app
+        path: ${{env.DOTNET_ROOT}}/myapp
  
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
